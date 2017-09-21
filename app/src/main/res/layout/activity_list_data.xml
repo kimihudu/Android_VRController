@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,40 +8,114 @@
     android:fitsSystemWindows="true"
     tools:context="trios.vrcontroller.vrcontroller.ListData">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/app_bar"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/app_bar_height"
-        android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/toolbar_layout"
+        <TextView
+            android:id="@+id/heading"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            android:layout_height="45dp"
+            android:layout_weight="2"
+            android:paddingTop="10dp"
+            android:paddingLeft="118dp"
+            android:paddingRight="0dp"
+            android:paddingBottom="8dp"
+            android:layout_centerHorizontal="true"
+            android:text="List of Location"
+            android:background="#512DA8"
+            android:textColor="#FFFF"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
+        <Button
+        android:id="@+id/btnBack"
+        android:layout_width="40dp"
+        android:layout_height="38dp"
+        android:layout_alignTop="@+id/heading"
+        android:paddingLeft="3dp"
+        android:layout_marginTop="5dp"
+        android:drawableLeft="@mipmap/ic_back"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="?android:attr/selectableItemBackground"/>
 
-        </android.support.design.widget.CollapsingToolbarLayout>
-    </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_list_data" />
+    <ImageView
+        android:id="@+id/iconLoc"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_margin="5dp"
+        android:src="@mipmap/ic_loc"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/heading"
+        />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+    <TextView
+        android:id="@+id/listText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        android:textSize="15dp"
+        android:paddingTop="5dp"
+        android:layout_below="@+id/heading"
+        android:layout_toEndOf="@+id/iconLoc"
+        android:background="#EDE7F6"/>
+
+   >-->
+
+        <!--<ListView-->
+            <!--android:id="@+id/ListLoc"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:divider="#DCEDC8"-->
+            <!--android:dividerHeight="6dp"-->
+            <!--android:listSelector="#DCEDC8"-->
+            <!--android:background="#EDE7F6"-->
+            <!--android:drawableLeft="@mipmap/ic_back"-->
+            <!--android:layout_below="@+id/heading"-->
+
+            <!--/>-->
+
+    </RelativeLayout>
+
+
+
+
+    <!--<android.support.design.widget.AppBarLayout-->
+        <!--android:id="@+id/app_bar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/app_bar_height"-->
+        <!--android:fitsSystemWindows="true"-->
+        <!--android:theme="Saved Location">-->
+
+        <!--<android.support.design.widget.CollapsingToolbarLayout-->
+            <!--android:id="@+id/toolbar_layout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:fitsSystemWindows="true"-->
+            <!--app:contentScrim="?attr/colorPrimary"-->
+            <!--app:layout_scrollFlags="scroll|exitUntilCollapsed">-->
+
+            <!--<android.support.v7.widget.Toolbar-->
+                <!--android:id="@+id/toolbar"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="?attr/actionBarSize"-->
+                <!--app:layout_collapseMode="pin"-->
+                <!--app:popupTheme="@style/AppTheme.PopupOverlay" />-->
+
+        <!--</android.support.design.widget.CollapsingToolbarLayout>-->
+    <!--</android.support.design.widget.AppBarLayout>-->
+
+    <!--<include layout="@layout/content_list_data" />-->
+
+    <!--&lt;!&ndash;<android.support.design.widget.FloatingActionButton&ndash;&gt;-->
+        <!--&lt;!&ndash;android:id="@+id/fab"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_margin="@dimen/fab_margin"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:layout_anchor="@id/app_bar"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:layout_anchorGravity="bottom|end"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:srcCompat="@android:drawable/ic_dialog_email" />&ndash;&gt;-->
 
 </android.support.design.widget.CoordinatorLayout>

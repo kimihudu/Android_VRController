@@ -72,7 +72,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/action_sign_in_short"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:background="#512DA8"
+                android:textColor="#FFFF"
+                android:textSize="18dp"/>
             <Button
                 android:id="@+id/email_register_button"
                 style="?android:textAppearanceSmall"
@@ -80,7 +83,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/action_register"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:background="#512DA8"
+                android:textColor="#FFFF"
+                android:textSize="18dp"/>
 
         </LinearLayout>
     </ScrollView>
