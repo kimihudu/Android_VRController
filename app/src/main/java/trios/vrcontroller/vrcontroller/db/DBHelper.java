@@ -5,10 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
 import java.util.ArrayList;
 import java.util.List;
-
+import trios.vrcontroller.vrcontroller.model.GeoInfo;
 import trios.vrcontroller.vrcontroller.model.User;
 
 /**
@@ -24,21 +23,40 @@ public class DBHelper extends SQLiteOpenHelper{
     private static final String DATABASE_NAME = "UserManager.db";
 
     // User table name
-    private static final String TABLE_USER = "user";
+    private static final String TABLE_USER  = "user";
+    private static final String TABLE_GEO   = "geo";
 
     // User Table Columns names
-    private static final String COLUMN_USER_ID = "user_id";
-    private static final String COLUMN_USER_NAME = "user_name";
-    private static final String COLUMN_USER_EMAIL = "user_email";
-    private static final String COLUMN_USER_PASSWORD = "user_password";
+    private static final String COLUMN_USER_ID          = "user_id";
+    private static final String COLUMN_USER_NAME        = "user_name";
+    private static final String COLUMN_USER_EMAIL       = "user_email";
+    private static final String COLUMN_USER_PASSWORD    = "user_password";
+    private static final String COLUMN_USER_GEOINFO     = "user_geo_info";
+
+    // GEO Table Columns names
+    private static final String COLUMN_GEO_ID   = "geo_id";
+    private static final String COLUMN_GEO_LONG = "geo_long";
+    private static final String COLUMN_GEO_LAT  = "geo_lat";
+
 
     // create table sql query
-    private String CREATE_USER_TABLE = "CREATE TABLE " + TABLE_USER + "("
-            + COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_USER_NAME + " TEXT,"
-            + COLUMN_USER_EMAIL + " TEXT," + COLUMN_USER_PASSWORD + " TEXT" + ")";
+
+    private String CREATE_USER_TABLE = "CREATE TABLE "  + TABLE_USER            + "("
+                                                        + COLUMN_USER_ID        + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                                                        + COLUMN_USER_NAME      + " TEXT,"
+                                                        + COLUMN_USER_EMAIL     + " TEXT,"
+                                                        + COLUMN_USER_PASSWORD  + " TEXT"
+                                                                                + ")";
+
+    private String CREATE_GEO_TABLE = "CREATE TABLE "   + TABLE_GEO         + "("
+                                                        + COLUMN_GEO_ID     + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                                                        + COLUMN_GEO_LONG   + " TEXT,"
+                                                        + COLUMN_GEO_LAT    + " TEXT"
+                                                                            + ")";
 
     // drop table sql query
-    private String DROP_USER_TABLE = "DROP TABLE IF EXISTS " + TABLE_USER;
+    private String DROP_USER_TABLE  = "DROP TABLE IF EXISTS " + TABLE_USER;
+    private String DROP_GEO_TABLE   = "DROP TABLE IF EXISTS " + TABLE_GEO;
 
     /**
      * Constructor
@@ -52,20 +70,22 @@ public class DBHelper extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_USER_TABLE);
+        db.execSQL(CREATE_GEO_TABLE);
     }
-
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
         //Drop User Table if exist
         db.execSQL(DROP_USER_TABLE);
+        db.execSQL(DROP_GEO_TABLE);
 
         // Create tables again
         onCreate(db);
 
     }
 
+//    TODO: USER table section
     /**
      * This method is to create user record
      *
@@ -78,6 +98,7 @@ public class DBHelper extends SQLiteOpenHelper{
         values.put(COLUMN_USER_NAME, user.getName());
         values.put(COLUMN_USER_EMAIL, user.getEmail());
         values.put(COLUMN_USER_PASSWORD, user.getPassword());
+        values.put(COLUMN_USER_GEOINFO, user.getGeoInfo());
 
         // Inserting Row
         db.insert(TABLE_USER, null, values);
@@ -95,7 +116,8 @@ public class DBHelper extends SQLiteOpenHelper{
                 COLUMN_USER_ID,
                 COLUMN_USER_EMAIL,
                 COLUMN_USER_NAME,
-                COLUMN_USER_PASSWORD
+                COLUMN_USER_PASSWORD,
+                COLUMN_USER_GEOINFO
         };
         // sorting orders
         String sortOrder =
@@ -108,7 +130,7 @@ public class DBHelper extends SQLiteOpenHelper{
         /**
          * Here query function is used to fetch records from user table this function works like we use sql query.
          * SQL query equivalent to this query function is
-         * SELECT user_id,user_name,user_email,user_password FROM user ORDER BY user_name;
+         * SELECT user_id,user_name,user_email,user_password,user_geo_info FROM user ORDER BY user_name;
          */
         Cursor cursor = db.query(TABLE_USER, //Table to query
                 columns,    //columns to return
@@ -127,6 +149,7 @@ public class DBHelper extends SQLiteOpenHelper{
                 user.setName(cursor.getString(cursor.getColumnIndex(COLUMN_USER_NAME)));
                 user.setEmail(cursor.getString(cursor.getColumnIndex(COLUMN_USER_EMAIL)));
                 user.setPassword(cursor.getString(cursor.getColumnIndex(COLUMN_USER_PASSWORD)));
+                user.setGeoInfo(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_USER_GEOINFO))));
                 // Adding user record to list
                 userList.add(user);
             } while (cursor.moveToNext());
@@ -150,6 +173,7 @@ public class DBHelper extends SQLiteOpenHelper{
         values.put(COLUMN_USER_NAME, user.getName());
         values.put(COLUMN_USER_EMAIL, user.getEmail());
         values.put(COLUMN_USER_PASSWORD, user.getPassword());
+        values.put(COLUMN_USER_GEOINFO, user.getGeoInfo());
 
         // updating row
         db.update(TABLE_USER, values, COLUMN_USER_ID + " = ?",
@@ -258,4 +282,77 @@ public class DBHelper extends SQLiteOpenHelper{
 
         return false;
     }
+
+//    TODO: GEO table section
+
+    /**
+     * This method is to create geo record
+     *
+     * @param geo
+     */
+    public void addGEO(GeoInfo geo) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_GEO_LAT, geo.getLatitube());
+        values.put(COLUMN_GEO_LONG,geo.getLongitube());
+
+        // Inserting Row
+        db.insert(TABLE_GEO, null, values);
+        db.close();
+    }
+
+    /**
+     * This method is to fetch all user and return the list of geo records
+     *
+     * @return list
+     */
+    public List<GeoInfo> getAllGEO() {
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_GEO_ID,
+                COLUMN_GEO_LONG,
+                COLUMN_GEO_LAT
+        };
+        // sorting orders
+        String sortOrder =
+                COLUMN_GEO_ID + " ASC";
+        List<GeoInfo> geoList = new ArrayList<GeoInfo>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // query the user table
+        /**
+         * Here query function is used to fetch records from user table this function works like we use sql query.
+         * SQL query equivalent to this query function is
+         * SELECT geo_id,geo_long,geo_lat FROM geo ORDER BY geo_id;
+         */
+        Cursor cursor = db.query(TABLE_GEO, //Table to query
+                columns,    //columns to return
+                null,        //columns for the WHERE clause
+                null,        //The values for the WHERE clause
+                null,       //group the rows
+                null,       //filter by row groups
+                sortOrder); //The sort order
+
+
+        // Traversing through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                GeoInfo _geo = new GeoInfo();
+                _geo.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_GEO_ID))));
+                _geo.setLatitube(cursor.getString(cursor.getColumnIndex(COLUMN_GEO_LAT)));
+                _geo.setLongitube(cursor.getString(cursor.getColumnIndex(COLUMN_GEO_LONG)));
+
+                // Adding user record to list
+                geoList.add(_geo);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        // return geo list
+        return geoList;
+    }
+
 }

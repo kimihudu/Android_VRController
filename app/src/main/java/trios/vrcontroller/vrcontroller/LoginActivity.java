@@ -34,7 +34,11 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import trios.vrcontroller.vrcontroller.db.DBHelper;
+import trios.vrcontroller.vrcontroller.model.User;
+
 import static android.Manifest.permission.READ_CONTACTS;
+import static android.R.attr.data;
 
 /**
  * A login screen that offers login via email/password.
@@ -63,11 +67,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private Boolean unAuth;
+    private User user;
+    private DBHelper dbHelper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+//        TODO: create db
+        dbHelper = new DBHelper(this.getBaseContext());
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -89,6 +101,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View view) {
                 attemptLogin();
+            }
+        });
+
+        Button mEmailSignUpButton = (Button) findViewById(R.id.email_register_button);
+        mEmailSignUpButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptLogin();
+                unAuth = true;
             }
         });
 
@@ -317,15 +338,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 return false;
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
+//            for (String credential : DUMMY_CREDENTIALS) {
+//                String[] pieces = credential.split(":");
+//                if (pieces[0].equals(mEmail)) {
+//                    // Account exists, return true if the password matches.
+//                    return pieces[1].equals(mPassword);
+//                }
+//            }
+
+            // TODO: get user from db to auth
+            if (!unAuth) return dbHelper.checkUser(mEmail, mPassword);
 
             // TODO: register the new account here.
+            if (unAuth) {
+
+                user = new User(mEmail, mPassword);
+                dbHelper.addUser(user);
+                return true;
+            }
+
             return true;
         }
 

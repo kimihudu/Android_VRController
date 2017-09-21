@@ -10,6 +10,15 @@ public class User {
     private String name;
     private String email;
     private String password;
+    private int geoInfo;
+
+    public User(){}
+
+    public User(String email, String password){
+
+        this.email      = email;
+        this.password   = password;
+    }
 
     public int getId() {
         return id;
@@ -41,5 +50,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setGeoInfo(int geoInfo) {
+        this.geoInfo = geoInfo;
+    }
+
+    public int getGeoInfo() {
+        return geoInfo;
     }
 }
