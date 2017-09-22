@@ -368,7 +368,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             if (success) {
                 finish();
                 Toast.makeText(LoginActivity.this, "Congrats: Login Successfull", Toast.LENGTH_LONG).show();
-                Intent i = new Intent(LoginActivity.this, MapsActivity.class);
+                Intent i = new Intent(LoginActivity.this, MainActivity.class);
 //                i.putExtra("user", user.getUsrName());
                 startActivity(i);
             } else {
