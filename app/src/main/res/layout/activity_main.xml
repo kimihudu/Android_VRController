@@ -30,7 +30,6 @@
         android:layout_alignTop="@+id/heading"
         android:paddingLeft="8dp"
         android:layout_marginTop="5dp"
-        android:drawableRight="@mipmap/ic_next"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:background="?android:attr/selectableItemBackground"/>
@@ -73,7 +72,6 @@
             android:layout_alignStart="@+id/btnBack"
             android:layout_alignTop="@+id/linearLayout2"
             android:layout_weight="1"
-            android:background=""
             android:onClick="geoLocate"
             android:orientation="horizontal"
             android:text="go"
@@ -83,7 +81,7 @@
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/btnAddJob"
+        android:id="@+id/btnAddLoc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/ic_gps_fixed_black_24dp"
