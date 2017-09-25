@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import static trios.vrcontroller.vrcontroller.R.id.btnAddLoc;
+
 
 public class ListData extends AppCompatActivity {
 
