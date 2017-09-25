@@ -10,7 +10,7 @@ public class User {
     private String name;
     private String email;
     private String password;
-    private int geoInfo;
+    private int geoInfo = -1;
 
     public User(){}
 

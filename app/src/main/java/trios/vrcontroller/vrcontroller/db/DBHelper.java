@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 import trios.vrcontroller.vrcontroller.model.GeoInfo;
@@ -31,7 +33,7 @@ public class DBHelper extends SQLiteOpenHelper{
     private static final String COLUMN_USER_NAME        = "user_name";
     private static final String COLUMN_USER_EMAIL       = "user_email";
     private static final String COLUMN_USER_PASSWORD    = "user_password";
-    private static final String COLUMN_USER_GEOINFO     = "user_geo_info";
+    private static final String COLUMN_USER_GEO_INFO    = "user_geo_info";
 
     // GEO Table Columns names
     private static final String COLUMN_GEO_ID   = "geo_id";
@@ -45,7 +47,8 @@ public class DBHelper extends SQLiteOpenHelper{
                                                         + COLUMN_USER_ID        + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                                                         + COLUMN_USER_NAME      + " TEXT,"
                                                         + COLUMN_USER_EMAIL     + " TEXT,"
-                                                        + COLUMN_USER_PASSWORD  + " TEXT"
+                                                        + COLUMN_USER_PASSWORD  + " TEXT,"
+                                                        + COLUMN_USER_GEO_INFO   + "TEXT"
                                                                                 + ")";
 
     private String CREATE_GEO_TABLE = "CREATE TABLE "   + TABLE_GEO         + "("
@@ -57,6 +60,10 @@ public class DBHelper extends SQLiteOpenHelper{
     // drop table sql query
     private String DROP_USER_TABLE  = "DROP TABLE IF EXISTS " + TABLE_USER;
     private String DROP_GEO_TABLE   = "DROP TABLE IF EXISTS " + TABLE_GEO;
+
+    // delete table sql query
+    private String DELETE_USER_TABLE  = "DELETE FROM " + TABLE_USER;
+    private String DELETE_GEO_TABLE   = "DELETE FROM " + TABLE_GEO;
 
     /**
      * Constructor
@@ -98,7 +105,7 @@ public class DBHelper extends SQLiteOpenHelper{
         values.put(COLUMN_USER_NAME, user.getName());
         values.put(COLUMN_USER_EMAIL, user.getEmail());
         values.put(COLUMN_USER_PASSWORD, user.getPassword());
-        values.put(COLUMN_USER_GEOINFO, user.getGeoInfo());
+        values.put(COLUMN_USER_GEO_INFO, user.getGeoInfo());
 
         // Inserting Row
         db.insert(TABLE_USER, null, values);
@@ -117,7 +124,7 @@ public class DBHelper extends SQLiteOpenHelper{
                 COLUMN_USER_EMAIL,
                 COLUMN_USER_NAME,
                 COLUMN_USER_PASSWORD,
-                COLUMN_USER_GEOINFO
+                COLUMN_USER_GEO_INFO
         };
         // sorting orders
         String sortOrder =
@@ -149,7 +156,7 @@ public class DBHelper extends SQLiteOpenHelper{
                 user.setName(cursor.getString(cursor.getColumnIndex(COLUMN_USER_NAME)));
                 user.setEmail(cursor.getString(cursor.getColumnIndex(COLUMN_USER_EMAIL)));
                 user.setPassword(cursor.getString(cursor.getColumnIndex(COLUMN_USER_PASSWORD)));
-                user.setGeoInfo(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_USER_GEOINFO))));
+                user.setGeoInfo(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_USER_GEO_INFO))));
                 // Adding user record to list
                 userList.add(user);
             } while (cursor.moveToNext());
@@ -173,7 +180,7 @@ public class DBHelper extends SQLiteOpenHelper{
         values.put(COLUMN_USER_NAME, user.getName());
         values.put(COLUMN_USER_EMAIL, user.getEmail());
         values.put(COLUMN_USER_PASSWORD, user.getPassword());
-        values.put(COLUMN_USER_GEOINFO, user.getGeoInfo());
+        values.put(COLUMN_USER_GEO_INFO, user.getGeoInfo());
 
         // updating row
         db.update(TABLE_USER, values, COLUMN_USER_ID + " = ?",
@@ -353,6 +360,13 @@ public class DBHelper extends SQLiteOpenHelper{
 
         // return geo list
         return geoList;
+    }
+
+    public void deleteTable(String tableName){
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.execSQL("DELETE FROM " + tableName);
+        Log.i("DELETE TABLE",tableName);
     }
 
 }
