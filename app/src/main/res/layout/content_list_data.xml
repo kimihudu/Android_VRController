@@ -15,6 +15,5 @@
         android:divider="#DCEDC8"
         android:dividerHeight="6dp"
         android:listSelector="#DCEDC8"
-        android:background="#EDE7F6"
-/>
+        android:background="#EDE7F6" />
 </android.support.v4.widget.NestedScrollView>

@@ -4,6 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="trios.vrcontroller.vrcontroller.StreetViewImgs">
+    tools:context="trios.vrcontroller.vrcontroller.StreetViewImgs"
+    tools:showIn="@layout/activity_street_imgs">
+
+
+
+    <ListView
+        android:id="@+id/StreetListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="#DCEDC8"
+        android:dividerHeight="6dp"
+        android:listSelector="#DCEDC8"
+        android:background="#EDE7F6"
+        />
 
 </android.support.constraint.ConstraintLayout>
