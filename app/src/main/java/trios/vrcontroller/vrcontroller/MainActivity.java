@@ -20,6 +20,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Toast;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -232,5 +233,10 @@ public class MainActivity extends AppCompatActivity
         Intent info = new Intent(getApplicationContext(), ViewSphere.class);
         startActivity(info);
         return true;
+    }
+    public void sendMessage( View v)
+    {
+        Intent intent = new Intent(MainActivity.this, ListData.class);
+        startActivity(intent);
     }
 }
