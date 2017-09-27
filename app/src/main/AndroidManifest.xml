@@ -66,9 +66,8 @@
             android:label="@string/title_activity_list_data"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-
-
-        <activity android:name=".ViewSphere"></activity>
+        <activity android:name=".ViewSphere" />
+        <activity android:name=".StreetViewImgs"></activity>
     </application>
 
 </manifest>

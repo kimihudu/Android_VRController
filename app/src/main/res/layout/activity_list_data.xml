@@ -53,59 +53,7 @@
         android:background="#EDE7F6"/>
 
 
-
-        <!--<ListView-->
-            <!--android:id="@+id/ListLoc"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:divider="#DCEDC8"-->
-            <!--android:dividerHeight="6dp"-->
-            <!--android:listSelector="#DCEDC8"-->
-            <!--android:background="#EDE7F6"-->
-            <!--android:drawableLeft="@mipmap/ic_back"-->
-            <!--android:layout_below="@+id/heading"-->
-
-            <!--/>-->
-
     </RelativeLayout>
 
-
-
-
-    <!--<android.support.design.widget.AppBarLayout-->
-        <!--android:id="@+id/app_bar"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="@dimen/app_bar_height"-->
-        <!--android:fitsSystemWindows="true"-->
-        <!--android:theme="Saved Location">-->
-
-        <!--<android.support.design.widget.CollapsingToolbarLayout-->
-            <!--android:id="@+id/toolbar_layout"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:fitsSystemWindows="true"-->
-            <!--app:contentScrim="?attr/colorPrimary"-->
-            <!--app:layout_scrollFlags="scroll|exitUntilCollapsed">-->
-
-            <!--<android.support.v7.widget.Toolbar-->
-                <!--android:id="@+id/toolbar"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="?attr/actionBarSize"-->
-                <!--app:layout_collapseMode="pin"-->
-                <!--app:popupTheme="@style/AppTheme.PopupOverlay" />-->
-
-        <!--</android.support.design.widget.CollapsingToolbarLayout>-->
-    <!--</android.support.design.widget.AppBarLayout>-->
-
-    <!--<include layout="@layout/content_list_data" />-->
-
-    <!--&lt;!&ndash;<android.support.design.widget.FloatingActionButton&ndash;&gt;-->
-        <!--&lt;!&ndash;android:id="@+id/fab"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:layout_margin="@dimen/fab_margin"&ndash;&gt;-->
-        <!--&lt;!&ndash;app:layout_anchor="@id/app_bar"&ndash;&gt;-->
-        <!--&lt;!&ndash;app:layout_anchorGravity="bottom|end"&ndash;&gt;-->
-        <!--&lt;!&ndash;app:srcCompat="@android:drawable/ic_dialog_email" />&ndash;&gt;-->
 
 </android.support.design.widget.CoordinatorLayout>
