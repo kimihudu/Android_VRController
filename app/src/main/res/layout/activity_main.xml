@@ -11,7 +11,7 @@
     android:id="@+id/Tittle"
     android:layout_width="match_parent"
     android:layout_height="45dp"
-    android:background="#512DA8">
+    android:background="@color/colorVoilet">
 
 
     <Button
@@ -75,7 +75,7 @@
             android:orientation="horizontal"
             android:text="GO"
             android:background="#00000000"
-            android:textColor="#512DA8"
+            android:textColor="@color/colorVoilet"
             android:textSize="19dp"
             android:textStyle="bold"
             android:layout_alignParentTop="true"
