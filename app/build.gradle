@@ -32,4 +32,6 @@ dependencies {
     compile 'com.android.support:design:26.+'
     compile 'com.squareup.picasso:picasso:2.5.2'
     testCompile 'junit:junit:4.12'
+    compile 'com.google.vr:sdk-panowidget:1.80.0'
+    compile 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
 }

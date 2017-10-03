@@ -1,107 +1,183 @@
 package trios.vrcontroller.vrcontroller;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.StreetViewPanorama;
+import com.google.android.gms.maps.StreetViewPanoramaFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.OnStreetViewPanoramaReadyCallback;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.StreetViewPanoramaLocation;
 
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+import trios.vrcontroller.vrcontroller.model.Cache;
 
-public class StreetViewImgs extends AppCompatActivity {
+import static android.R.attr.bitmap;
 
-    Double latitude;
-    Double longitude;
-    ImageView streetImg;
-    final String GG_API_KEY = "AIzaSyA9UX1Ajb6h5y2Op4Fnf0K1IUsQdM5D0IA";
+
+public class StreetViewImgs extends FragmentActivity implements OnStreetViewPanoramaReadyCallback {
+
+    private static final String MARKER_POSITION_KEY = "MarkerPosition";
+    private Marker mMarker;
+    Double longitude = null;
+    Double latitude = null;
+    StreetViewPanoramaLocation currentLoc;
+    StreetViewPanorama mStreetViewPanorama;
+    String panoId;
+    FloatingActionButton btn360;
+    Bitmap img360;
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_street_view_imgs);
 
-        streetImg = (ImageView) findViewById(R.id.StreetImg);
-        streetImg.setOnClickListener(viewSphere);
+        longitude = getIntent().getDoubleExtra("Long", 0);
+        latitude = getIntent().getDoubleExtra("Lat", 0);
 
-        latitude = getIntent().getDoubleExtra("Lat",0);
-        longitude = getIntent().getDoubleExtra("Long",0);
+        StreetViewPanoramaFragment streetViewPanoramaFragment = (StreetViewPanoramaFragment) getFragmentManager().findFragmentById(R.id.streetviewpanorama);
+        streetViewPanoramaFragment.getStreetViewPanoramaAsync(this);
 
+
+        btn360 = (FloatingActionButton)findViewById(R.id.fab);
+        btn360.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                getPanoID(mStreetViewPanorama);
+//                Thread wait for loading img from url request
+                BitmapFromUrl bitmapFromUrl = new BitmapFromUrl();
+                bitmapFromUrl.execute();
+
+
+
+            }
+        });
+
+    }
+
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        outState.putParcelable(MARKER_POSITION_KEY, mMarker.getPosition());
+//    }
+
+
+
+    private void getPanoID(StreetViewPanorama streetViewPanorama) {
         try{
-//            Picasso.with(getBaseContext()).load(getImg(longitude,latitude)).into(streetImg);
-            String urlRe = getImg(longitude,latitude);
-            RetrieveURLTask tmpObj = new RetrieveURLTask();
-            tmpObj.execute(urlRe);
-            Log.i("test","test");
+            currentLoc = streetViewPanorama.getLocation();
+            panoId = currentLoc.links[0].panoId;
+            Log.i("panoID", panoId);
         }catch (Exception e){
-            Log.i("get img", e.getMessage());
+            Log.wtf("getPanoID", e.getMessage());
+            Toast.makeText(getBaseContext(),e.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+            return;
         }
 
     }
 
-//    TODO: get img from long/lat
-    public String getImg(Double longitude,Double latitude){
-//        String imageURL = "https://maps.googleapis.com/maps/api/streetview?size=300x300&location=";
-//        imageURL += latitude + "," + longitude + "&fov=120&heading=0&pitch=0";
+    @Override
+    public void onStreetViewPanoramaReady(StreetViewPanorama streetViewPanorama) {
+        streetViewPanorama.setPosition(new LatLng(latitude, longitude));
+        mStreetViewPanorama = streetViewPanorama;
+    }
 
-//        https://maps.googleapis.com/maps/api/streetview/metadata?location=30.7451333%2C34.8850511&key=GG_API_KEY
+    //    TODO: get img from long/lat
+    public String getImgUrl(String panoId) {
 
-        String imageURL = "https://maps.googleapis.com/maps/api/streetview/metadata?location=";
-        imageURL += latitude + "," + longitude + "&key=" + GG_API_KEY;
-        Log.wtf("prepareInfoView", imageURL);
+//        http://cbk0.google.com/cbk?output=tile&panoid=w2x2xcYAvShN4DVXUGEXHg&zoom=3&x=5&y=1
+        String imageURL = "http://cbk0.google.com/cbk?output=tile&panoid=";
+        imageURL += panoId +"&zoom=3&x=5&y=1";
+        Log.wtf("getImgUrl", imageURL);
         return imageURL;
 
     }
-//TODO: get XML return with pano_id --> error return null/ try with the other location
-    public static Drawable LoadImageFromWebOperations(String url) {
+
+    //    TODO: download bitmap from URL
+    public static Bitmap getBitmapFromURL(String src) {
         try {
-            InputStream is = (InputStream) new URL(url).getContent();
-            Drawable d = Drawable.createFromStream(is, "src name");
-            return d;
-        } catch (Exception e) {
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            // Log exception
             return null;
         }
+
+//        try {
+//
+////            String urlRe = getImg(-33.87365,151.20689);
+//            Bitmap bitmap = BitmapFactory.decodeStream((InputStream)new URL(src).getContent());
+////            streetImg.setImageBitmap(bitmap);
+//            return bitmap;
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
     }
 
-    private AdapterView.OnClickListener viewSphere = new AdapterView.OnClickListener() {
+    private class BitmapFromUrl extends AsyncTask<Void,Void,Boolean>{
+
+//        @Override
+//        protected void onPreExecute(){
+//            super.onPreExecute();
+//            //        Thread wait for loading complete location before get panoID
+//            MapPanoID mapPanoID = new MapPanoID();
+//            mapPanoID.execute();
+////            Log.i("MapPanoID", panoId);
+//        }
+
         @Override
-        public void onClick(View view) {
+        protected Boolean doInBackground(Void... voids) {
+            try{
+                Thread.sleep(1000);
+                //get bitmap from url with panoID
+                img360 = getBitmapFromURL(getImgUrl(panoId));
+            }catch (Exception e){}
+            return true;
+        }
+//TODO: send bitmap img to view sphere
+        @Override
+        protected void onPostExecute(final Boolean success) {
             Intent i = new Intent(getApplicationContext(), ViewSphere.class);
+//            data too big for intent
+//            i.putExtra("img360", img360);
+//            Use cache for the big data
+            Cache.getInstance().getLru().put("bitmap_image", img360);
             startActivity(i);
         }
-    };
-
-    class RetrieveURLTask extends AsyncTask<String, Void, Drawable> {
-
-        private Exception exception;
-
-        protected Drawable doInBackground(String... urls) {
-            try {
-                return LoadImageFromWebOperations(urls[0]);
-
-            } catch (Exception e) {
-                this.exception = e;
-
-                return null;
-            }
-        }
-
-//        protected void onPostExecute(RSSFeed feed) {
-//            // TODO: check this.exception
-//            // TODO: do something with the feed
-//        }
     }
+
+
+
+
 }
