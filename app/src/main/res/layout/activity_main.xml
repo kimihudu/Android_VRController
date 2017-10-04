@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#ffffff">
+    android:background="#ffffff"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
 
 <RelativeLayout
     android:id="@+id/Tittle"
@@ -44,44 +46,48 @@
 
 
 
-       <RelativeLayout
+       <LinearLayout
            android:id="@+id/linearLayout2"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
            android:layout_alignTop="@+id/map"
-           android:layout_alignParentStart="true">
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content">
 
         <EditText
             android:id="@+id/txtSearch"
-            android:layout_width="200dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="search Location"
-            android:textColorHint="#c7c7c7"
-            android:textSize="18dp"
-            android:layout_marginLeft="12dp"
-            android:paddingTop="10dp"
+            android:textColorHint="@color/colorAccent"
+            android:textColor="@color/colorAccent"
             android:textColorHighlight="@color/colorAccent"
+            android:paddingTop="10dp"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="10dp"
+            android:gravity="left"
+            android:inputType="textPersonName"
+            android:textSize="13sp"
+            android:textStyle="bold"
             />
-
 
         <Button
             android:id="@+id/btnGo"
-            android:layout_width="52dp"
-            android:layout_height="45dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:onClick="geoLocate"
             android:layout_marginLeft="0dp"
             android:orientation="horizontal"
             android:text="GO"
             android:background="#00000000"
-            android:textColor="@color/colorVoilet"
+            android:textColor="@color/colorAccent"
             android:textSize="19dp"
             android:textStyle="bold"
             android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/txtSearch" />
+            android:layout_toEndOf="@+id/txtSearch"
+            android:gravity="center"/>
 
-       </RelativeLayout>
+       </LinearLayout>
 
 
 </RelativeLayout>

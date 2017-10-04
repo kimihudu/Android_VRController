@@ -2,13 +2,13 @@ package trios.vrcontroller.vrcontroller;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -17,18 +17,17 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-import android.os.Environment;
-import android.provider.ContactsContract;
-import android.support.design.widget.FloatingActionButton;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -41,11 +40,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.StreetViewPanoramaLocation;
 
 import java.util.List;
-
-import static android.R.attr.data;
 
 
 public class MainActivity extends AppCompatActivity
@@ -53,7 +49,8 @@ public class MainActivity extends AppCompatActivity
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         GoogleMap.OnMarkerClickListener,
-        LocationListener {
+        LocationListener,
+        GoogleMap.OnMyLocationButtonClickListener {
 
     GoogleMap mGoogleMap;
     SupportMapFragment mapFrag;
@@ -76,31 +73,31 @@ public class MainActivity extends AppCompatActivity
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
 
+//        TODO: for search location
         txtSearch = (EditText) findViewById(R.id.txtSearch);
+        txtSearch.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+                if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER
+                        || keyCode == KeyEvent.KEYCODE_ENTER) {
+                    String g = txtSearch.getText().toString();
+                    getSearch(g);
+                    hideSoftKeyboard(txtSearch);
+                    return true;
+                } else
+                    return true;
+            }
+        });
         btnGo = (Button) findViewById(R.id.btnGo);
         btnGo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String g = txtSearch.getText().toString();
-
-                Geocoder geocoder = new Geocoder(getBaseContext());
-                List<Address> addresses = null;
-
-                try {
-                    // Getting a maximum of 3 Address that matches the input
-                    // text
-                    addresses = geocoder.getFromLocationName(g, 3);
-                    if (addresses != null && !addresses.equals(""))
-
-                        streetViewPanorama.setPosition(search(addresses));
-//                    getPanoID();
-
-
-                } catch (Exception e) {
-
-                }
+                getSearch(g);
+                hideSoftKeyboard(txtSearch);
             }
         });
+
     }
 
     @Override
@@ -126,6 +123,8 @@ public class MainActivity extends AppCompatActivity
                 //Location Permission already granted
                 buildGoogleApiClient();
                 mGoogleMap.setMyLocationEnabled(true);
+                mGoogleMap.setOnMyLocationButtonClickListener(this);
+                mGoogleMap.setOnMarkerClickListener(this);
             } else {
                 //Request Location Permission
                 checkLocationPermission();
@@ -134,6 +133,7 @@ public class MainActivity extends AppCompatActivity
             buildGoogleApiClient();
             mGoogleMap.setMyLocationEnabled(true);
             mGoogleMap.setOnMarkerClickListener(this);
+            mGoogleMap.setOnMyLocationButtonClickListener(this);
         }
     }
 
@@ -153,11 +153,12 @@ public class MainActivity extends AppCompatActivity
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        if (ContextCompat.checkSelfPermission(this,
+//        auto get current location when loading map
+        /*if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        }
+        }*/
     }
 
     @Override
@@ -295,9 +296,45 @@ public class MainActivity extends AppCompatActivity
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(16));
 
+        if (mGoogleApiClient != null) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        }
 
         return latLng;
     }
 
+    @Override
+    public boolean onMyLocationButtonClick() {
+        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+        // Return false so that we don't consume the event and the default behavior still occurs
+        // (the camera animates to the user's current position).
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        }
+        return false;
+    }
 
+    private void getSearch(String place) {
+
+        Geocoder geocoder = new Geocoder(getBaseContext());
+        List<Address> addresses = null;
+
+        try {
+            // Getting a maximum of 3 Address that matches the input-text
+            addresses = geocoder.getFromLocationName(place, 3);
+            if (addresses != null && !addresses.equals(""))
+                streetViewPanorama.setPosition(search(addresses));
+        } catch (Exception e) {
+            Log.wtf("getSearch", e.getMessage());
+        }
+    }
+
+    //setting for soft keyboard hide after finished edit text
+    protected void hideSoftKeyboard(EditText input) {
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+    }
 }
